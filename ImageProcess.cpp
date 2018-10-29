@@ -354,12 +354,6 @@ void method1()
 				std::vector<cv::Point>distanceToRightDown;
 
 				std::vector<cv::Point2f>points_ = detectPoints(curves, outCurve, image);
-
-				/*for (int i = 0; i < points_.size(); i++)
-				{
-				circle(circleImage, points_[i], 5, Scalar(0, 0, 255), 3);
-				}*/
-
 				std::vector<cv::Point2f> points(4);
 				points[0] = cv::Point(0, 0);
 				points[1] = cv::Point(pointsMaxX, 0);
@@ -443,9 +437,8 @@ void sauvola(cv::Mat img, cv::Mat imgGray, double k, int kernel_width,std::strin
 	char writeName1[256];
 	sprintf(writeName, "F:\\Ñ¸À×ÏÂÔØ\\imageEnhance\\%s", imgName);
 	sprintf(writeName1, "F:\\Ñ¸À×ÏÂÔØ\\imageEnhance\\%s", grayImgName);
-	cv::imwrite(writeName1, grayImgName);
+	cv::imwrite(writeName1, tempImg);
 	cv::imwrite(writeName, img);
-
 }
 
 void ImageEnhance()
@@ -469,235 +462,13 @@ void ImageEnhance()
 		int kernel_width = 500;
 		double x = kernel_width / 2;
 		sauvola(img2,img2Gray, k, x,name_, nameGray);
-
 	}
-}
-
-void ImageReProcess()
-{
-	int upToDownPixel = 0, leftToRightPixel = 0, downToUpPixel = 0, rightToLeftPixel = 0;
-	int upToDownI = 0, leftToRightJ = 0, downToUpI = 0, rightToLeftJ = 0;
-	int upToDownJ = 0, leftToRightI = 0, downToUpJ = 0, rightToLeftI = 0;
-	std::vector<int>I;
-	std::vector<int>J;
-	Point point1, point2, point3, point4;
-	std::string imgName = "F:\\Ñ¸À×ÏÂÔØ\\RedeceParems\\IMG_9495.JPG";
-	cv::Mat img = cv::imread(imgName);
-
-	for (int i = 0; i < img.rows; i++)
-	{
-		for (int j = 0; j < img.rows; j++)
-		{
-			//up to down
-			if ((i < 150 && j < img.cols) || (i>=img.rows-10 && j<img.cols) || (i<img.rows && j<20) || (i<img.rows && j>=img.rows-20)) {
-				int pixel1 = (int)img.at<Vec3b>(i, j)[0];
-				int pixel2 = (int)img.at<Vec3b>(i, j)[1];
-				int pixel3 = (int)img.at<Vec3b>(i, j)[2];
-
-				if (pixel1 > 70 && pixel2 > 70 && pixel3 > 70) {
-					pixel1 = 0;
-					pixel2 = 0;
-					pixel3 = 0;
-				}
-				img.at<Vec3b>(i, j)[0] = pixel1;
-				img.at<Vec3b>(i, j)[1] = pixel2;
-				img.at<Vec3b>(i, j)[2] = pixel3;
-			}
-		}
-	}
-	imshow("1", img);
-	cv::waitKey(0);
-
-	//up to down
-	/*for (int i = 0; i < 150; i++)
-	{
-		for (int j = 0; j < img.cols; j++)
-		{
-			int pixel1 = (int)img.at<Vec3b>(i, j)[0];
-			int pixel2 = (int)img.at<Vec3b>(i, j)[1];
-			int pixel3 = (int)img.at<Vec3b>(i, j)[2];
-
-			if (pixel1 > 70 && pixel2 > 70 && pixel3 > 70) {
-				pixel1 = 0;
-				pixel2 = 0;
-				pixel3 = 0;
-			}
-			img.at<Vec3b>(i, j)[0] = pixel1;
-			img.at<Vec3b>(i, j)[1] = pixel2;
-			img.at<Vec3b>(i, j)[2] = pixel3;
-		}
-	}*/
-	/*imshow("img1", img);
-	cv::waitKey(0);*/
-	
-	//down to up
-/*	for (int i = img.rows - 1; i >= img.rows - 10; i--)
-	{
-		for (int j = 0; j < img.cols; j++)
-		{
-			int pixel1 = (int)img.at<Vec3b>(i, j)[0];
-			int pixel2 = (int)img.at<Vec3b>(i, j)[1];
-			int pixel3 = (int)img.at<Vec3b>(i, j)[2];
-
-			if (pixel1 > 70 && pixel2 > 70 && pixel3 > 70) {
-				pixel1 = 0;
-				pixel2 = 0;
-				pixel3 = 0;
-			}
-			img.at<Vec3b>(i, j)[0] = pixel1;
-			img.at<Vec3b>(i, j)[1] = pixel2;
-			img.at<Vec3b>(i, j)[2] = pixel3;
-		}
-	*///}
-
-
-	for (int size = 0; size < 183; size++)
-	{
-		//only calc the edge pixel
-		for (int i = 0; i < 200; i++)
-		{
-			for (int j = 0; j < img.cols; j++)
-			{
-				int pixel1 = (int)img.at<Vec3b>(i, j)[0];
-				int pixel2 = (int)img.at<Vec3b>(i, j)[1];
-				int pixel3 = (int)img.at<Vec3b>(i, j)[2];
-
-				/*if (pixel1 > 70 && pixel2 > 70 && pixel3 > 70) {
-					pixel1 = 0;
-					pixel2 = 0;
-					pixel3 = 0;
-				}*/
-
-				if (pixel1 < 70 && pixel2 < 70 && pixel3 < 70) {
-					upToDownPixel++;
-				}
-				if ((upToDownPixel > 130 * img.cols)) {
-					if (pixel1 > 70 && pixel2 > 70 && pixel3 > 70) {
-						upToDownI = i;
-						upToDownJ = j;
-						point1 = Point(upToDownI, upToDownJ);
-						break;
-					}
-				}
-			}
-			if (upToDownI && upToDownJ) {
-				break;
-			}
-		}
-		I.push_back(upToDownI);
-		J.push_back(upToDownJ);
-
-		//down to up
-		for (int i = img.rows - 1; i >= img.rows - 50; i--)
-		{
-			for (int j = 0; j < img.cols; j++)
-			{
-				int pixel1 = (int)img.at<Vec3b>(i, j)[0];
-				int pixel2 = (int)img.at<Vec3b>(i, j)[1];
-				int pixel3 = (int)img.at<Vec3b>(i, j)[2];
-
-				if (pixel1 < 70 && pixel2 < 70 && pixel3 < 70) {
-					downToUpPixel++;
-				}
-				if ((downToUpPixel > 30 * img.cols)) {
-					if (pixel1 > 70 && pixel2 > 70 && pixel3 > 70) {
-						downToUpI = i;
-						downToUpJ = j;
-						point2 = Point(downToUpI, downToUpJ);
-						break;
-					}
-				}
-			}
-			if (downToUpI && downToUpJ) {
-				break;
-			}
-		}
-		I.push_back(downToUpI);
-		J.push_back(downToUpJ);
-
-		//right to left
-		for (int i = 0; i < img.rows; i++)
-		{
-			for (int j = img.cols - 1; j >= img.cols - 50; j--)
-			{
-				int pixel1 = (int)img.at<Vec3b>(i, j)[0];
-				int pixel2 = (int)img.at<Vec3b>(i, j)[1];
-				int pixel3 = (int)img.at<Vec3b>(i, j)[2];
-
-				if (pixel1 < 70 && pixel2 < 70 && pixel3 < 70) {
-					rightToLeftPixel++;
-				}
-				if ((rightToLeftPixel > 30 * img.rows)) {
-					if (pixel1 > 70 && pixel2 > 70 && pixel3 > 70) {
-						rightToLeftI = i;
-						rightToLeftJ = j;
-						point3 = Point(rightToLeftI, rightToLeftJ);
-						break;
-					}
-				}
-			}
-			if (rightToLeftI && rightToLeftJ) {
-				break;
-			}
-		}
-		I.push_back(rightToLeftI);
-		J.push_back(rightToLeftJ);
-
-		//left to right
-		for (int i = 0; i < img.rows; i++)
-		{
-			for (int j = 0; j < 50; j++)
-			{
-				int pixel1 = (int)img.at<Vec3b>(i, j)[0];
-				int pixel2 = (int)img.at<Vec3b>(i, j)[1];
-				int pixel3 = (int)img.at<Vec3b>(i, j)[2];
-
-				if (pixel1 < 70 && pixel2 < 70 && pixel3 < 70) {
-					leftToRightPixel++;
-				}
-				if ((leftToRightPixel > 20 * img.rows)) {
-					if (pixel1 > 70 && pixel2 > 70 && pixel3 > 70) {
-						leftToRightI = i;
-						leftToRightJ = j;
-						point4 = Point(leftToRightI, leftToRightJ);
-						break;
-					}
-				}
-			}
-			if (leftToRightI && leftToRightJ) {
-				break;
-			}
-		}
-		I.push_back(leftToRightI);
-		J.push_back(leftToRightJ);
-
-		if (!upToDownI || !upToDownJ || !downToUpI || !downToUpJ || !leftToRightI || !leftToRightJ || !rightToLeftI || !rightToLeftJ) {
-			J.clear();
-			I.clear();
-			continue;
-		}
-
-		//find the max and min (i,j)
-		std::sort(I.begin(), I.end());
-		std::sort(J.begin(), J.end());
-		int minI = I[0];
-		int maxI = I[I.size() - 1];
-		int minJ = J[0];
-		int maxJ = J[J.size() - 1];
-
-		Rect area(minI, minJ, maxJ - minJ, maxI - minI);
-		Mat newImg = Mat::zeros(maxJ - minJ, maxI - minI, img.type());
-		newImg=img(Rect(minJ, minI, maxJ - minJ, maxI - minI));
-	
-		cv::imshow("new", newImg);
-		cv::waitKey(0);
-	}	
 }
 
 int main(int argc, char **argv)
 {
 	method1();
-	//ImageReProcess();
+
 	ImageEnhance();//Í¼ÏñÔöÇ¿
 
 	return 0;
